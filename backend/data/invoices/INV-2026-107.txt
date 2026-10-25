@@ -1,0 +1,12 @@
+Harbor Logistics
+TAX INVOICE
+
+Invoice No: INV-2026-107
+Invoice Date: 16 October 2026
+Payment Due: 15 November 2026
+Vendor: Harbor Logistics
+
+Bill To: Northstar Demo Company
+
+Description: Pallet inbound freight, week 41
+Amount Due: Rs. 9,200.00

@@ -1,0 +1,1 @@
+"""CentrAlign Operator prototype."""

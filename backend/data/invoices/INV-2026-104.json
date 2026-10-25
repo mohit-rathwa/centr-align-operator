@@ -1,0 +1,10 @@
+{
+  "invoice_number": "INV-2026-104",
+  "vendor": "Acme Office Supplies",
+  "issued_at": "2026-10-18",
+  "due_date": "2026-11-17",
+  "amount_inr": 18450.00,
+  "currency": "INR",
+  "description": "Office stationery and printer supplies",
+  "source_file": "INV-2026-104.json"
+}

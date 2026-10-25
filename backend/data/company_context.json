@@ -1,0 +1,31 @@
+{
+  "company_name": "Northstar Demo Company",
+  "purpose": "A sandbox policy profile for the CentrAlign Operator prototype.",
+  "currency": "INR",
+  "accounts_payable": {
+    "approval_threshold_inr": 50000,
+    "maximum_single_invoice_inr": 1000000,
+    "allowed_vendors": [
+      "Acme Office Supplies",
+      "Northstar Components",
+      "BlueOak Analytics",
+      "Harbor Logistics"
+    ],
+    "required_fields": ["invoice_number", "vendor", "issued_at", "due_date", "amount_inr"],
+    "duplicate_policy": "Never create more than one payable for the same source invoice.",
+    "write_policy": "Invoices at or above the approval threshold require human approval before a payable is created.",
+    "verification_policy": "Read the created payable back from the ledger and compare source invoice, vendor, amount, due date, and status."
+  },
+  "vendor_aliases": {
+    "aos": "Acme Office Supplies",
+    "nsc": "Northstar Components",
+    "boa": "BlueOak Analytics",
+    "harbor": "Harbor Logistics"
+  },
+  "security": {
+    "tools_are_allowlisted": true,
+    "unrecognized_tools_are_rejected": true,
+    "prototype_uses_sandbox_ledger": true,
+    "never_use_real_credentials": true
+  }
+}

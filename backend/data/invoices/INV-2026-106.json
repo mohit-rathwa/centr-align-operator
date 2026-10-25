@@ -1,0 +1,10 @@
+{
+  "invoice_number": "INV-2026-106",
+  "vendor": "BlueOak Analytics",
+  "issued_at": "2026-10-21",
+  "due_date": "2026-11-05",
+  "amount_inr": 245000.00,
+  "currency": "INR",
+  "description": "Quarterly analytics platform subscription",
+  "source_file": "INV-2026-106.json"
+}

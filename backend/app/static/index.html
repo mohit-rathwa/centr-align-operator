@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b1120" />
+  <title>CentrAlign Operator · AI Employee Runtime</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080d18; --surface: #101827; --surface-2: #131f31; --surface-3: #18263a;
+      --line: rgba(171, 194, 225, .12); --text: #edf4ff; --muted: #96a8c2;
+      --cyan: #6ce2dc; --cyan-d: #173c43; --blue: #8eafff; --green: #69dfab;
+      --amber: #f5c56d; --red: #ff8a95; --shadow: 0 24px 80px rgba(0,0,0,.24);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: radial-gradient(ellipse at 15% -15%, rgba(57,105,163,.22), transparent 38%), radial-gradient(ellipse at 90% 0%, rgba(29,132,127,.12), transparent 28%), var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.45; }
+    button, textarea, input { font: inherit; }
+    button { cursor: pointer; }
+    .shell { max-width: 1500px; margin: 0 auto; padding: 26px 34px 48px; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 34px; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand-mark { width:42px; height:42px; border-radius: 13px; background: linear-gradient(145deg,#9df5e6,#62a4ff); color:#081222; display:grid; place-items:center; font-weight:900; letter-spacing:-.08em; box-shadow: 0 6px 24px rgba(108,226,220,.16); }
+    .brand-name { font-size:15px; font-weight:750; letter-spacing:.01em; }
+    .brand-sub { color:var(--muted); font-size:11px; margin-top:2px; letter-spacing:.08em; text-transform:uppercase; }
+    .header-right { display:flex; align-items:center; gap:12px; }
+    .status-top { display:flex; align-items:center; gap:8px; border:1px solid var(--line); border-radius:999px; padding:9px 13px; font-size:12px; color:#bfcedf; background:rgba(14,24,39,.8); }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px rgba(105,223,171,.1); }
+    .header-tag { color:var(--muted); font-size:12px; }
+    .hero { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin:0 0 26px; }
+    .eyebrow { color:var(--cyan); font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; display:flex; align-items:center; gap:9px; margin-bottom:12px; }
+    .eyebrow:before { content:""; height:1px; width:22px; background:var(--cyan); }
+    h1 { font-size:clamp(31px,4vw,49px); line-height:1.05; letter-spacing:-.045em; margin:0; max-width:740px; font-weight:760; }
+    h1 span { color:#82e5dd; }
+    .hero p { color:var(--muted); margin:13px 0 0; max-width:675px; font-size:14px; line-height:1.7; }
+    .hero-badge { flex-shrink:0; padding:13px 16px; border:1px solid rgba(108,226,220,.22); border-radius:14px; color:#c7f8f2; background:linear-gradient(130deg,rgba(36,101,105,.2),rgba(37,62,101,.12)); font-size:12px; display:flex; align-items:center; gap:10px; }
+    .hero-badge b { display:block; font-size:13px; color:var(--text); margin-bottom:2px; }
+    .stats { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:13px; margin-bottom:22px; }
+    .stat { border:1px solid var(--line); background:rgba(16,24,39,.74); padding:17px 18px; border-radius:16px; min-height:100px; }
+    .stat-top { display:flex; justify-content:space-between; align-items:center; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+    .stat-icon { color:var(--cyan); font-size:16px; }
+    .stat-value { font-size:24px; font-weight:740; letter-spacing:-.03em; margin-top:10px; }
+    .stat-note { font-size:11px; color:#8294ad; margin-top:2px; }
+    .main-grid { display:grid; grid-template-columns:minmax(400px,.88fr) minmax(500px,1.12fr); gap:18px; align-items:start; }
+    .panel { border:1px solid var(--line); background:linear-gradient(160deg,rgba(17,27,44,.98),rgba(13,21,34,.98)); border-radius:19px; box-shadow:var(--shadow); overflow:hidden; }
+    .panel-head { padding:19px 21px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    .panel-title { display:flex; align-items:center; gap:10px; font-size:14px; font-weight:700; }
+    .panel-title .glyph { display:grid; place-items:center; width:29px; height:29px; border-radius:9px; background:rgba(108,226,220,.1); color:var(--cyan); font-size:15px; }
+    .panel-kicker { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); }
+    .panel-body { padding:21px; }
+    .label-row { display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:10px; }
+    label { font-size:12px; font-weight:700; color:#dce8fa; }
+    .label-note { color:#7d91ad; font-size:11px; }
+    textarea { width:100%; min-height:132px; background:#0a1220; border:1px solid #2a3a52; border-radius:12px; resize:vertical; padding:14px 15px; color:#eef5ff; line-height:1.65; outline:none; font-size:13px; transition:border .15s,box-shadow .15s; }
+    textarea:focus { border-color:rgba(108,226,220,.7); box-shadow:0 0 0 3px rgba(108,226,220,.08); }
+    .quick-label { margin:19px 0 9px; color:var(--muted); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.09em; }
+    .templates { display:flex; flex-wrap:wrap; gap:8px; }
+    .template { text-align:left; border:1px solid #263750; border-radius:999px; background:#111d30; color:#c6d7ee; padding:8px 11px; font-size:11px; transition:all .15s; }
+    .template:hover { border-color:#69cfc9; color:white; background:#142b3b; }
+    .run-options { margin:17px 0 15px; border:1px solid var(--line); border-radius:12px; background:rgba(6,13,24,.55); padding:12px 13px; display:flex; justify-content:space-between; align-items:center; gap:14px; }
+    .option-main { display:flex; gap:10px; align-items:center; }
+    .toggle { appearance:none; width:34px; height:20px; border-radius:999px; background:#293950; position:relative; outline:none; transition:background .15s; flex-shrink:0; }
+    .toggle:before { content:""; position:absolute; width:14px; height:14px; border-radius:50%; top:3px; left:3px; background:#91a5c1; transition:transform .15s,background .15s; }
+    .toggle:checked { background:#286b6e; }
+    .toggle:checked:before { transform:translateX(14px); background:#c0ffef; }
+    .option-title { font-size:12px; color:#dce8fa; font-weight:650; }
+    .option-desc { font-size:10px; color:#8397b3; margin-top:2px; }
+    .option-pill { padding:5px 8px; border-radius:7px; background:#1c2c42; color:#aec2dd; font-size:10px; white-space:nowrap; }
+    .primary { border:0; border-radius:11px; padding:13px 15px; width:100%; background:linear-gradient(100deg,#7be7d8,#8ab9ff); color:#071524; font-weight:800; font-size:13px; letter-spacing:.01em; box-shadow:0 7px 25px rgba(108,226,220,.12); transition:transform .15s,filter .15s; }
+    .primary:hover { filter:brightness(1.07); transform:translateY(-1px); }
+    button:disabled { opacity:.5; cursor:not-allowed; transform:none!important; }
+    .fine-print { color:#788ca7; font-size:10px; margin-top:11px; line-height:1.6; }
+    .run-head-right { display:flex; align-items:center; gap:8px; }
+    .pill { display:inline-flex; align-items:center; gap:6px; padding:5px 9px; border:1px solid var(--line); border-radius:999px; font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:#b7c7dd; white-space:nowrap; }
+    .pill:before { content:""; width:5px; height:5px; background:#8da0b8; border-radius:50%; }
+    .pill.running,.pill.queued { color:#a8c9ff; border-color:rgba(142,175,255,.22); background:rgba(66,96,157,.1); }
+    .pill.running:before,.pill.queued:before { background:var(--blue); }
+    .pill.completed { color:#8ce7b7; border-color:rgba(105,223,171,.24); background:rgba(37,120,81,.12); }
+    .pill.completed:before { background:var(--green); }
+    .pill.awaiting_approval { color:#ffdb91; border-color:rgba(245,197,109,.25); background:rgba(120,82,23,.13); }
+    .pill.awaiting_approval:before { background:var(--amber); }
+    .pill.failed,.pill.blocked { color:#ffabb0; border-color:rgba(255,138,149,.24); background:rgba(144,41,58,.12); }
+    .pill.failed:before,.pill.blocked:before { background:var(--red); }
+    .pill.needs_input { color:#ffdb91; }
+    .small-btn { border:1px solid #2a3e59; background:#142136; color:#c4d7ef; border-radius:8px; padding:7px 10px; font-size:11px; }
+    .timeline-wrap { padding:17px 21px 4px; }
+    .empty-run { display:grid; place-items:center; text-align:center; min-height:215px; color:var(--muted); padding:25px; }
+    .empty-orb { width:57px; height:57px; border:1px solid rgba(108,226,220,.2); background:rgba(108,226,220,.06); border-radius:18px; display:grid; place-items:center; font-size:24px; color:var(--cyan); margin-bottom:13px; }
+    .empty-run strong { display:block; color:#dbe7f8; font-size:13px; margin-bottom:5px; }
+    .empty-run p { max-width:280px; font-size:11px; line-height:1.65; margin:0; }
+    .run-meta { display:flex; gap:8px; align-items:center; flex-wrap:wrap; color:#8fa3be; font-size:10px; }
+    .event-list { list-style:none; margin:0; padding:0; }
+    .event { display:grid; grid-template-columns:28px minmax(0,1fr) auto; gap:10px; position:relative; padding:0 0 17px; }
+    .event:not(:last-child):before { content:""; position:absolute; top:28px; bottom:0; left:13px; width:1px; background:#283950; }
+    .event-icon { width:27px; height:27px; border:1px solid #2b3b53; border-radius:9px; background:#132137; display:grid; place-items:center; font-size:12px; color:#a9c4e6; z-index:1; }
+    .event-icon.success { color:var(--green); border-color:rgba(105,223,171,.25); background:rgba(36,103,75,.15); }
+    .event-icon.error,.event-icon.blocked { color:var(--red); border-color:rgba(255,138,149,.25); }
+    .event-icon.approval_required { color:var(--amber); border-color:rgba(245,197,109,.28); }
+    .event-main { min-width:0; padding-top:2px; }
+    .event-title { font-size:12px; font-weight:700; color:#e2ecfb; }
+    .event-detail { font-size:11px; color:#91a3bd; line-height:1.6; margin-top:4px; overflow-wrap:anywhere; }
+    .event-time { font-size:9px; color:#687d99; white-space:nowrap; padding-top:3px; }
+    .approval-card { border:1px solid rgba(245,197,109,.34); background:linear-gradient(140deg,rgba(113,78,27,.15),rgba(40,44,49,.2)); padding:15px; border-radius:13px; margin:0 21px 19px; }
+    .approval-top { display:flex; gap:9px; align-items:center; color:#ffda91; font-size:12px; font-weight:800; }
+    .approval-card p { color:#c3cde0; font-size:11px; line-height:1.6; margin:9px 0 13px; }
+    .approval-fields { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:12px 0; }
+    .approval-field { border:1px solid rgba(245,197,109,.16); background:rgba(8,14,23,.35); border-radius:8px; padding:9px; }
+    .approval-field span { display:block; color:#9eabc0; font-size:9px; text-transform:uppercase; letter-spacing:.07em; }
+    .approval-field b { display:block; margin-top:5px; color:#f3f5fb; font-size:12px; }
+    .approval-actions { display:flex; gap:8px; }
+    .approve { border:1px solid rgba(105,223,171,.25); background:rgba(38,112,78,.23); color:#a5f4c8; border-radius:8px; padding:9px 12px; font-size:11px; font-weight:750; }
+    .reject { border:1px solid rgba(255,138,149,.24); background:rgba(129,43,56,.16); color:#ffabb0; border-radius:8px; padding:9px 12px; font-size:11px; }
+    .below-grid { display:grid; grid-template-columns:1.08fr .92fr; gap:18px; margin-top:18px; }
+    .list-table { width:100%; border-collapse:collapse; }
+    .list-table th { color:#788ca7; font-size:9px; text-transform:uppercase; letter-spacing:.09em; font-weight:700; text-align:left; padding:0 12px 11px; }
+    .list-table td { border-top:1px solid var(--line); padding:12px; font-size:11px; color:#c1d0e5; }
+    .list-table td strong { display:block; font-size:11px; color:#edf4ff; font-weight:700; }
+    .sub { font-size:9px; color:#7c91ad; margin-top:3px; }
+    .money { font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .policy-list { display:grid; gap:13px; }
+    .policy-row { display:grid; grid-template-columns:31px 1fr; gap:11px; align-items:start; }
+    .policy-ico { width:30px; height:30px; border:1px solid var(--line); background:#152338; border-radius:9px; color:var(--cyan); display:grid; place-items:center; font-size:13px; }
+    .policy-row b { font-size:11px; display:block; color:#dfeafa; margin:1px 0 3px; }
+    .policy-row p { font-size:10px; color:#8ea2bd; margin:0; line-height:1.6; }
+    .foot { display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px; margin-top:22px; padding:0 3px; color:#647a96; font-size:10px; }
+    .foot a { color:#89b9d5; text-decoration:none; }
+    .toast { position:fixed; bottom:22px; right:22px; z-index:9; max-width:360px; border:1px solid #2b435f; border-radius:12px; background:#152338; color:#e4eefb; box-shadow:var(--shadow); padding:13px 16px; font-size:12px; opacity:0; transform:translateY(8px); pointer-events:none; transition:all .2s; }
+    .toast.show { opacity:1; transform:translateY(0); }
+    .error-text { color:#ffabb0; font-size:11px; margin-top:8px; }
+    .loading { display:inline-block; width:11px; height:11px; border:2px solid rgba(5,18,30,.25); border-top-color:#071524; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:7px; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @media (max-width:1100px) { .main-grid { grid-template-columns:1fr; } .hero { align-items:flex-start; } .below-grid { grid-template-columns:1fr; } }
+    @media (max-width:720px) { .shell { padding:18px 13px 32px; } header { margin-bottom:24px; } .header-tag { display:none; } .hero { display:block; } .hero-badge { display:inline-flex; margin-top:18px; } .stats { grid-template-columns:repeat(2,minmax(0,1fr)); } .main-grid { display:block; } .main-grid .panel + .panel { margin-top:15px; } .panel-head { padding:15px; } .panel-body { padding:15px; } .timeline-wrap { padding:15px 15px 3px; } .approval-card { margin:0 15px 15px; } .event { grid-template-columns:27px minmax(0,1fr); } .event-time { grid-column:2; padding:0; margin-top:-7px; } .approval-fields { grid-template-columns:1fr; } .run-head-right .small-btn { display:none; } .list-table td,.list-table th { padding-left:7px; padding-right:7px; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="brand-mark">CA</div>
+        <div><div class="brand-name">CentrAlign <span style="font-weight:500;color:#9aacc4">/ Operator</span></div><div class="brand-sub">AI employee runtime · sandbox</div></div>
+      </div>
+      <div class="header-right"><span class="header-tag">From request to verified outcome</span><div class="status-top"><span class="dot"></span><span id="service-status">Connecting to runtime…</span></div></div>
+    </header>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Autonomous company operator</div>
+        <h1>Make work finish itself.<br /><span>Then prove it happened.</span></h1>
+        <p>Give the operator an outcome, not a list of clicks. It plans the workflow, uses approved tools, reacts to what it observes, asks for approval when policy requires it, and checks the final record before claiming success.</p>
+      </div>
+      <div class="hero-badge"><span style="font-size:20px">✳</span><div><b>One real workflow, end to end</b><span style="color:#98c6ce">Invoice → policy gate → AP ledger → verification</span></div></div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><div class="stat-top">Runtime <span class="stat-icon">◈</span></div><div class="stat-value" id="stat-runtime">—</div><div class="stat-note" id="stat-planner">Checking planner</div></div>
+      <div class="stat"><div class="stat-top">Persisted runs <span class="stat-icon">⌁</span></div><div class="stat-value" id="stat-runs">0</div><div class="stat-note">Execution + audit timeline</div></div>
+      <div class="stat"><div class="stat-top">AP ledger records <span class="stat-icon">▤</span></div><div class="stat-value" id="stat-ledger">0</div><div class="stat-note">Sandbox writes only</div></div>
+      <div class="stat"><div class="stat-top">Approval threshold <span class="stat-icon">⛨</span></div><div class="stat-value" id="stat-threshold">₹50k</div><div class="stat-note">Human approval before higher-value writes</div></div>
+    </section>
+
+    <section class="main-grid">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title"><span class="glyph">⌘</span>Give the operator a task</div><span class="panel-kicker">Natural language</span></div>
+        <div class="panel-body">
+          <div class="label-row"><label for="goal">Desired outcome</label><span class="label-note">One sentence is enough</span></div>
+          <textarea id="goal" maxlength="1200" spellcheck="false">Find the latest invoice from Acme Office Supplies, extract the amount and due date, enter it into our AP system, and tell me once it is verified.</textarea>
+          <div class="quick-label">Try a scenario</div>
+          <div class="templates">
+            <button class="template" data-goal="Find the latest invoice from Acme Office Supplies, extract the amount and due date, enter it into our AP system, and tell me once it is verified.">✓ Normal completion</button>
+            <button class="template" data-goal="Find the latest invoice from Northstar Components, record it in accounts payable, and show me the verified ledger entry.">⛨ Approval gate</button>
+            <button class="template" data-goal="Find the latest invoice from BlueOak Analytics, register it in AP, and verify every field against the source.">↗ Higher-value invoice</button>
+            <button class="template" data-goal="Process the newest invoice and make sure the AP record is real, not just reported as complete.">? Ask for clarification</button>
+          </div>
+          <div class="run-options">
+            <div class="option-main"><input class="toggle" id="inject-failure" type="checkbox" /><div><div class="option-title">Inject one temporary tool failure</div><div class="option-desc">Tests retry logic and audit visibility.</div></div></div>
+            <span class="option-pill">Demo mode</span>
+          </div>
+          <button class="primary" id="run-btn"><span id="run-btn-label">▶ &nbsp; Run autonomous task</span></button>
+          <div id="submit-error" class="error-text" hidden></div>
+          <div class="fine-print">Sandbox only. Writes go to a local SQLite ledger. This prototype cannot access real company systems or credentials. The model may help parse intent; tool permissions and approval rules stay in the runtime.</div>
+        </div>
+      </div>
+
+      <div class="panel" id="activity-panel">
+        <div class="panel-head"><div class="panel-title"><span class="glyph">⌁</span>Execution trace</div><div class="run-head-right"><span id="run-status" class="pill">Standby</span><button class="small-btn" id="refresh-btn">↻ Refresh</button></div></div>
+        <div class="timeline-wrap" id="run-meta-wrap" hidden><div class="run-meta"><span id="run-id"></span><span>·</span><span id="run-created"></span></div></div>
+        <div id="approval-area"></div>
+        <div class="timeline-wrap" id="timeline-wrap"><div class="empty-run"><div><div class="empty-orb">✳</div><strong>Ready when you are</strong><p>Start a task to watch goal understanding, tool calls, observations, policy decisions, retries, and final verification as they happen.</p></div></div></div>
+        <div id="evidence-area"></div>
+      </div>
+    </section>
+
+    <section class="below-grid">
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title"><span class="glyph">▤</span>Sandbox invoice workspace</div><span class="panel-kicker">Read-only source files</span></div>
+        <div class="panel-body" style="padding:11px 13px 15px;overflow-x:auto">
+          <table class="list-table"><thead><tr><th>Invoice / vendor</th><th>Issued</th><th>Due date</th><th>Amount</th></tr></thead><tbody id="invoice-rows"><tr><td colspan="4">Loading demo invoices…</td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="panel-title"><span class="glyph">⛨</span>Company memory & guardrails</div><span class="panel-kicker">Loaded from persistent policy</span></div>
+        <div class="panel-body"><div class="policy-list" id="policy-list"><div style="font-size:11px;color:var(--muted)">Loading company policy…</div></div></div>
+      </div>
+    </section>
+
+    <footer class="foot"><span>Prototype scope: vendor invoice intake → accounts payable record. No external side effects.</span><span>Built around <a href="/docs" target="_blank" rel="noreferrer">inspectable API contracts</a> · <a href="/api/health" target="_blank" rel="noreferrer">runtime health</a></span></footer>
+  </div>
+  <div class="toast" id="toast"></div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let currentRunId = null;
+  let currentRun = null;
+  let polling = null;
+  let toastTimer = null;
+  const activeStates = new Set(['queued','running','awaiting_approval']);
+  const money = (value) => new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(Number(value || 0));
+  const fmtTime = (s) => { if (!s) return ''; try { return new Date(s).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}); } catch { return ''; } };
+  const fmtDate = (s) => { if (!s) return '—'; try { return new Date(s + (String(s).length === 10 ? 'T00:00:00' : '')).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); } catch { return s; } };
+  function showToast(message) { $('toast').textContent = message; $('toast').classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => $('toast').classList.remove('show'), 3000); }
+  async function api(path, options={}) {
+    const response = await fetch(path, {headers:{'Content-Type':'application/json'}, ...options});
+    let payload = {}; try { payload = await response.json(); } catch {}
+    if (!response.ok) throw new Error(payload.detail || `Request failed (${response.status})`);
+    return payload;
+  }
+  function statusPill(status) { const label = (status || 'standby').replaceAll('_',' '); return `<span class="pill ${escapeHtml(status)}">${escapeHtml(label)}</span>`; }
+  function eventIcon(kind) { return ({planning:'✧',action:'↗',tool_result:'↳',observation:'◉',retry:'↻',approval_required:'⛨',approval_decision:'✓',approval:'✓',success:'✓',error:'!',blocked:'⛔',clarification:'?',recovery:'↻',system:'•'})[kind] || '·'; }
+  function renderEvents(run) {
+    const events = run.events || [];
+    if (!events.length) { $('timeline-wrap').innerHTML = `<div class="empty-run"><div><div class="empty-orb">⌁</div><strong>Preparing the first action…</strong><p>The run is saved. Its planner and tools will appear here as each observation is recorded.</p></div></div>`; return; }
+    $('timeline-wrap').innerHTML = `<ul class="event-list">${events.slice().reverse().map((ev) => {
+      const cls = ['success','error','blocked','approval_required'].includes(ev.kind) ? ev.kind : '';
+      const attempt = ev.attempt ? `<span class="sub">Attempt ${ev.attempt}</span>` : '';
+      return `<li class="event"><div class="event-icon ${cls}">${eventIcon(ev.kind)}</div><div class="event-main"><div class="event-title">${escapeHtml(ev.title)}</div><div class="event-detail">${escapeHtml(ev.detail)}</div>${attempt}</div><div class="event-time">${escapeHtml(fmtTime(ev.created_at))}</div></li>`;
+    }).join('')}</ul>`;
+  }
+  function renderApproval(run) {
+    const approval = run.pending_approval;
+    if (run.status !== 'awaiting_approval' || !approval) { $('approval-area').innerHTML = ''; return; }
+    if ($('approve-btn') && $('reject-btn')) return;
+    $('approval-area').innerHTML = `<div class="approval-card"><div class="approval-top"><span>⛨</span> Human approval required</div><p>${escapeHtml(approval.reason)} The agent is paused before writing to the ledger. Review the source details, then explicitly approve or decline.</p><div class="approval-fields"><div class="approval-field"><span>Vendor</span><b>${escapeHtml(approval.vendor)}</b></div><div class="approval-field"><span>Invoice</span><b>${escapeHtml(approval.invoice_number)}</b></div><div class="approval-field"><span>Amount</span><b>${escapeHtml(money(approval.amount_inr))}</b></div></div><div class="approval-actions"><button class="approve" id="approve-btn">✓ Approve and continue</button><button class="reject" id="reject-btn">Decline write</button></div></div>`;
+    $('approve-btn').onclick = () => decideApproval('approved');
+    $('reject-btn').onclick = () => decideApproval('rejected');
+  }
+  function renderEvidence(run) {
+    const verification = run.state?.verification_result;
+    if (!verification) { $('evidence-area').innerHTML = ''; return; }
+    const record = verification.evidence || {};
+    const checks = verification.checks || {};
+    $('evidence-area').innerHTML = `<div style="margin:0 21px 21px;border:1px solid ${verification.verified ? 'rgba(105,223,171,.25)' : 'rgba(255,138,149,.25)'};background:rgba(5,13,22,.48);border-radius:13px;overflow:hidden"><div style="padding:13px 15px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px"><div style="font-size:12px;font-weight:800;color:${verification.verified ? '#92e7b9' : '#ffabb0'}">${verification.verified ? '✓ Verified ledger evidence' : '! Verification failed'}</div><span class="panel-kicker">Read-after-write</span></div><div style="padding:14px 15px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px"><div><div class="panel-kicker">Ledger reference</div><div style="font-size:13px;font-weight:800;margin-top:4px">${escapeHtml(record.id || '—')}</div></div><div><div class="panel-kicker">Source invoice</div><div style="font-size:13px;font-weight:800;margin-top:4px">${escapeHtml(record.invoice_number || '—')}</div></div><div><div class="panel-kicker">Payee</div><div style="font-size:12px;margin-top:4px">${escapeHtml(record.vendor || '—')}</div></div><div><div class="panel-kicker">Amount · due</div><div style="font-size:12px;margin-top:4px">${escapeHtml(money(record.amount_inr))} · ${escapeHtml(record.due_date || '—')}</div></div></div><div style="padding:0 15px 14px;display:flex;flex-wrap:wrap;gap:6px">${Object.entries(checks).map(([name,ok]) => `<span class="pill ${ok ? 'completed' : 'failed'}">${ok ? '✓' : '!'} ${escapeHtml(name.replaceAll('_',' '))}</span>`).join('')}</div></div>`;
+  }
+  function renderRun(run) {
+    currentRun = run;
+    $('run-status').outerHTML = `<span id="run-status" class="pill ${escapeHtml(run.status)}">${escapeHtml(run.status.replaceAll('_',' '))}</span>`;
+    $('run-meta-wrap').hidden = false;
+    $('run-id').textContent = `Run ${run.id.slice(0,8)}`;
+    $('run-created').textContent = `Started ${fmtTime(run.created_at)}`;
+    renderEvents(run); renderApproval(run); renderEvidence(run);
+    if (run.status === 'completed') showToast('Outcome verified. The ledger record is shown below the execution trace.');
+    if (['failed','blocked','needs_input'].includes(run.status) && run.summary) showToast(run.summary);
+    if (!activeStates.has(run.status) && polling) { clearInterval(polling); polling = null; $('run-btn').disabled = false; $('run-btn-label').innerHTML = '▶ &nbsp; Run another task'; }
+  }
+  async function refreshStats() {
+    try {
+      const [health,runs,ledger] = await Promise.all([api('/api/health'),api('/api/runs'),api('/api/ledger')]);
+      $('service-status').textContent = 'Runtime online';
+      $('stat-runtime').textContent = 'Ready';
+      $('stat-planner').textContent = health.planner;
+      $('stat-runs').textContent = String(runs.length);
+      $('stat-ledger').textContent = String(ledger.length);
+      $('stat-threshold').textContent = `₹${Number(health.approval_threshold_inr || 0).toLocaleString('en-IN')}`;
+    } catch (e) { $('service-status').textContent = 'Runtime unavailable'; $('stat-runtime').textContent = 'Offline'; $('stat-planner').textContent = 'Start the backend to connect'; }
+  }
+  async function loadWorkspace() {
+    try {
+      const [invoices,policy] = await Promise.all([api('/api/invoices'),api('/api/memory')]);
+      $('invoice-rows').innerHTML = invoices.map(inv => `<tr><td><strong>${escapeHtml(inv.invoice_number)}</strong><div class="sub">${escapeHtml(inv.vendor)}</div></td><td>${escapeHtml(fmtDate(inv.issued_at))}</td><td>${escapeHtml(fmtDate(inv.due_date))}</td><td class="money">${escapeHtml(money(inv.amount_inr))}</td></tr>`).join('');
+      const ap = policy.accounts_payable || {}; const security = policy.security || {};
+      const entries = [
+        ['⛨','Approval before mutation',`A payable at or above ${money(ap.approval_threshold_inr)} pauses for explicit human approval.`],
+        ['✓','Pre-write validation',`Vendor allowlist, required fields, positive amount, date order, hard limit, and duplicate lookup.`],
+        ['↻','Idempotent writes',ap.duplicate_policy || 'The same source invoice cannot create two ledger records.'],
+        ['⌕','Proof, not assertion',ap.verification_policy || 'The runtime reads the record back and compares core fields.'],
+        ['⌑','Tool boundary',`Allowlisted tools only; ${security.prototype_uses_sandbox_ledger ? 'sandbox ledger' : 'configured ledger'}; no shell or arbitrary URL execution.`]
+      ];
+      $('policy-list').innerHTML = entries.map(e => `<div class="policy-row"><div class="policy-ico">${e[0]}</div><div><b>${escapeHtml(e[1])}</b><p>${escapeHtml(e[2])}</p></div></div>`).join('');
+    } catch (e) { $('invoice-rows').innerHTML = `<tr><td colspan="4">Could not load workspace: ${escapeHtml(e.message)}</td></tr>`; }
+  }
+  async function restoreActiveRun() {
+    try {
+      const runs = await api('/api/runs');
+      const active = runs.find((run) => activeStates.has(run.status));
+      if (!active || currentRunId) return;
+      currentRunId = active.id;
+      renderRun(active);
+      $('run-btn').disabled = true;
+      $('run-btn-label').innerHTML = '<span class="loading"></span> Resuming saved run…';
+      if (polling) clearInterval(polling);
+      polling = setInterval(pollCurrentRun, 800);
+      await pollCurrentRun();
+    } catch (e) { /* Health/status widgets surface connection problems; don't block the page. */ }
+  }
+  async function startRun() {
+    const goal = $('goal').value.trim();
+    if (goal.length < 8) { $('submit-error').hidden = false; $('submit-error').textContent = 'Describe the task in at least a few words.'; return; }
+    $('submit-error').hidden = true; $('run-btn').disabled = true; $('run-btn-label').innerHTML = '<span class="loading"></span> Starting task…';
+    $('approval-area').innerHTML = ''; $('evidence-area').innerHTML = '';
+    try {
+      const run = await api('/api/runs',{method:'POST',body:JSON.stringify({goal,simulate_transient_failure:$('inject-failure').checked})});
+      currentRunId = run.id; renderRun(run);
+      $('run-btn-label').innerHTML = '<span class="loading"></span> Operator working…';
+      if (polling) clearInterval(polling);
+      polling = setInterval(pollCurrentRun, 800);
+      await pollCurrentRun(); refreshStats();
+    } catch (e) {
+      $('run-btn').disabled = false; $('run-btn-label').textContent = '▶  Run autonomous task';
+      $('submit-error').hidden = false; $('submit-error').textContent = e.message;
+    }
+  }
+  async function pollCurrentRun() {
+    if (!currentRunId) return;
+    try { const run = await api(`/api/runs/${encodeURIComponent(currentRunId)}`); renderRun(run); if (!activeStates.has(run.status)) { await refreshStats(); } }
+    catch (e) { if (polling) { clearInterval(polling); polling = null; } showToast(e.message); $('run-btn').disabled = false; }
+  }
+  async function decideApproval(decision) {
+    if (!currentRunId) return;
+    const buttons = [$('approve-btn'),$('reject-btn')].filter(Boolean); buttons.forEach(b => b.disabled = true);
+    try {
+      const run = await api(`/api/runs/${encodeURIComponent(currentRunId)}/approval`,{method:'POST',body:JSON.stringify({decision,note:decision === 'approved' ? 'Reviewed source, amount, and policy gate in demo UI.' : 'Declined from demo UI.'})});
+      renderRun(run); showToast(decision === 'approved' ? 'Approval saved. The agent is resuming the write and verification steps.' : 'Approval declined. The ledger will not be written.');
+      if (polling) clearInterval(polling); polling = setInterval(pollCurrentRun,800);
+    } catch (e) { showToast(e.message); buttons.forEach(b => b.disabled = false); }
+  }
+  document.querySelectorAll('[data-goal]').forEach(button => button.addEventListener('click', () => { $('goal').value = button.getAttribute('data-goal'); $('goal').focus(); }));
+  $('run-btn').addEventListener('click',startRun);
+  $('refresh-btn').addEventListener('click',async () => { await refreshStats(); await loadWorkspace(); if (currentRunId) await pollCurrentRun(); showToast('Runtime data refreshed.'); });
+  refreshStats(); loadWorkspace(); restoreActiveRun();
+  setInterval(refreshStats,15000);
+})();
+</script>
+</body>
+</html>

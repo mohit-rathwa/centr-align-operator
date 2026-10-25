@@ -1,0 +1,10 @@
+{
+  "invoice_number": "INV-2026-105",
+  "vendor": "Northstar Components",
+  "issued_at": "2026-10-20",
+  "due_date": "2026-11-19",
+  "amount_inr": 128400.00,
+  "currency": "INR",
+  "description": "Replacement components for assembly line 2",
+  "source_file": "INV-2026-105.json"
+}

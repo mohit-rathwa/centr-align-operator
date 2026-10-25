@@ -1,0 +1,14 @@
+services:
+  centr-align-operator:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      DATABASE_PATH: /data/agent.db
+    volumes:
+      - centr_align_db:/data
+    restart: unless-stopped
+volumes:
+  centr_align_db:

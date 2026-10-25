@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+.env
+backend/data/agent.db
+backend/data/agent.db-shm
+backend/data/agent.db-wal
+.DS_Store
